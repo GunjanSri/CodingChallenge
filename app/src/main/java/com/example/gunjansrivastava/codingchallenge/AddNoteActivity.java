@@ -26,7 +26,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class AddNoteActivity extends AppCompatActivity{
+public class AddNoteActivity extends AppCompatActivity implements Callback<Notes>{
+    private final String TAG = NotesListActivity.class.getSimpleName();
+    private NotesStorage storage;
+
     @BindView(R.id.addNoteWrapper)
     TextInputLayout textInputLayout;
     @BindView(R.id.addNoteEditText)
@@ -41,6 +44,7 @@ public class AddNoteActivity extends AppCompatActivity{
         setContentView(R.layout.add_note);
         ButterKnife.bind(this);
         addNoteEdiText.addTextChangedListener(textWatcher);
+        storage = NotesStorage.getInstance(this);
     }
 
     TextWatcher textWatcher = new TextWatcher() {
@@ -69,19 +73,19 @@ public class AddNoteActivity extends AppCompatActivity{
                 .build().inject(this);
 
         RestServiceAddNoteProtocol restServiceProtocol = retrofit.create(RestServiceAddNoteProtocol.class);
-        restServiceProtocol.addAndGetList(note).enqueue(new Callback<Notes>() {
-            @Override
-            public void onResponse(Call<Notes> call, Response<Notes> response) {
-                Log.d("Response " , ""+ response.body().toString());
-                NotesStorage storage = NotesStorage.getInstance(AddNoteActivity.this);
-                storage.saveNotes(response.body());
-                AddNoteActivity.this.finish();
-            }
+        restServiceProtocol.addAndGetList(note).enqueue(AddNoteActivity.this);
+    }
 
-            @Override
-            public void onFailure(Call<Notes> call, Throwable t) {
-                Log.d("Response " , "Exception");
-            }
-        });
+    @Override
+    public void onResponse(Call<Notes> call, Response<Notes> response) {
+        Log.d("Response " , ""+ response.body().toString());
+
+        storage.saveNotes(response.body());
+        AddNoteActivity.this.finish();
+    }
+
+    @Override
+    public void onFailure(Call<Notes> call, Throwable t) {
+        Log.d(TAG, "Request failed: " + t.getMessage());
     }
 }

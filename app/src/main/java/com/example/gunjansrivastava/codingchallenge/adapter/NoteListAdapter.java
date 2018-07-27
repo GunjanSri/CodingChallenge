@@ -14,10 +14,7 @@ import java.util.List;
 
 public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.MyViewHolder> {
 
-    List<Note> notes;
-    public NoteListAdapter(List<Note> notes){
-        this.notes = notes;
-    }
+    private List<Note> notes;
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
 
