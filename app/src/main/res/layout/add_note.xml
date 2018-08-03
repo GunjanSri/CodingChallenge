@@ -1,30 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+<layout>
 
-    <android.support.design.widget.TextInputLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/addNoteWrapper"
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.example.gunjansrivastava.codingchallenge.viewmodel.AddNoteViewModel">
+
+        </variable>
+
+        <import type="android.content.Context" />
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:counterEnabled="true"
-        app:counterMaxLength="10"
-        app:counterTextAppearance="@style/CounterColor">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/addNoteEditText"
-            style="@style/AddNote"
+        <android.support.design.widget.TextInputLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/addNoteWrapper"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </android.support.design.widget.TextInputLayout>
+            android:layout_height="wrap_content"
+            app:counterEnabled="true"
+            app:counterMaxLength="10"
+            app:counterTextAppearance="@style/CounterColor">
 
-    <Button
-        android:id="@+id/submitNote"
-        style="@style/Button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/add_note_label" />
-</LinearLayout>
+            <EditText
+                android:id="@+id/addNoteEditText"
+                style="@style/AddNote"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@={viewModel.description}" />
+        </android.support.design.widget.TextInputLayout>
+
+        <Button
+            android:id="@+id/submitNote"
+            style="@style/Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{() -> viewModel.submitNode()}"
+            android:text="@string/submit" />
+    </LinearLayout>
+</layout>

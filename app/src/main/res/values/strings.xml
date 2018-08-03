@@ -2,4 +2,5 @@
     <string name="app_name">CodingChallenge</string>
     <string name="note_title">Notes</string>
     <string name="add_note_label">Add Note</string>
+    <string name="submit">Submit</string>
 </resources>

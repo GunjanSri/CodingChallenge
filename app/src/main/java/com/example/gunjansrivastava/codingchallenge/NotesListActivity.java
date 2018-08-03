@@ -1,6 +1,6 @@
 package com.example.gunjansrivastava.codingchallenge;
 
-import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,25 +10,23 @@ import android.util.Log;
 import com.example.gunjansrivastava.codingchallenge.adapter.NoteListAdapter;
 import com.example.gunjansrivastava.codingchallenge.client.RestServiceProtocol;
 import com.example.gunjansrivastava.codingchallenge.components.DaggerNoteComponent;
+import com.example.gunjansrivastava.codingchallenge.databinding.ActivityMainBinding;
 import com.example.gunjansrivastava.codingchallenge.modules.NoteListModules;
 import com.example.gunjansrivastava.codingchallenge.modules.RetrofitClientModule;
-import com.example.gunjansrivastava.codingchallenge.response.Notes;
+import com.example.gunjansrivastava.codingchallenge.viewmodel.FetchNoteViewModel;
+import com.example.gunjansrivastava.codingchallenge.viewmodel.NoteListViewModel;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class NotesListActivity extends AppCompatActivity implements Callback<Notes> {
+public class NotesListActivity extends AppCompatActivity implements Callback<List<NoteListViewModel>> {
     private final String TAG = NotesListActivity.class.getSimpleName();
-
-    @BindView(R.id.viewNoteList)
-    RecyclerView recyclerView;
 
     @Inject
     Retrofit retrofitClient;
@@ -36,17 +34,18 @@ public class NotesListActivity extends AppCompatActivity implements Callback<Not
     NoteListAdapter noteListAdapter;
 
     private NotesStorage storage;
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
 
         storage = NotesStorage.getInstance(this);
+        ActivityMainBinding binding = DataBindingUtil.setContentView(this,R.layout.activity_main);
+        FetchNoteViewModel model = new FetchNoteViewModel();
+        binding.setFetchNoteViewModel(model);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(noteListAdapter);
+        recyclerView = findViewById(R.id.viewNoteList);
 
         DaggerNoteComponent.builder()
                 .retrofitClientModule(new RetrofitClientModule("http://www.google.vom"))
@@ -58,33 +57,27 @@ public class NotesListActivity extends AppCompatActivity implements Callback<Not
         restServiceProtocol.getList().enqueue(this);
     }
 
-    @OnClick(R.id.addNoteButton)
-    public void onClick(){
-        Intent intent = new Intent(this, AddNoteActivity.class);
-        startActivity(intent);
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
         if(storage.getNotes() != null){
-            noteListAdapter.setUpdatedList(storage.getNotes().getNotesList());
+            noteListAdapter.setUpdatedList(storage.getNotes());
             noteListAdapter.notifyDataSetChanged();
         }
     }
 
     @Override
-    public void onResponse(Call<Notes> call, Response<Notes> response) {
+    public void onResponse(Call<List<NoteListViewModel>> call, Response<List<NoteListViewModel>> response) {
         if(response != null){
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
             recyclerView.setAdapter(noteListAdapter);
-            noteListAdapter.setUpdatedList(response.body().getNotesList());
+            noteListAdapter.setUpdatedList(response.body());
             noteListAdapter.notifyDataSetChanged();
         }
     }
 
     @Override
-    public void onFailure(Call<Notes> call, Throwable t) {
+    public void onFailure(Call<List<NoteListViewModel>> call, Throwable t) {
         Log.d(TAG, "Request failed: " + t.getMessage());
     }
 }

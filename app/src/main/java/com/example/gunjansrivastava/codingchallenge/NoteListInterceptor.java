@@ -28,24 +28,21 @@ public class NoteListInterceptor implements Interceptor {
                 .post(chain.request().body())
                 .build();
 
-        String result = "{\n" +
-                "\t\"notesList\": [\n" +
-                "\t\t{\n" +
-                "\t\t\t\"id\": \"1\",\n" +
-                "\t\t\t\"description\": \"Note 1 Description\"\n" +
-                "\t\t},\n" +
+        String result = "[{\n" +
+                "\t\t\"id\": \"1\",\n" +
+                "\t\t\"description\": \"This is sample note to test.\"\n" +
+                "\t},\n" +
                 "\n" +
-                "\t\t{\n" +
-                "\t\t\t\"id\": \"2\",\n" +
-                "\t\t\t\"description\": \"Note 2 Description\"\n" +
-                "\t\t},\n" +
+                "\t{\n" +
+                "\t\t\"id\": \"2\",\n" +
+                "\t\t\"description\": \"This is sample note to test.\"\n" +
+                "\t},\n" +
+                "\t{\n" +
+                "\t\t\"id\": \"2\",\n" +
+                "\t\t\"description\": \"This is sample note to test.\"\n" +
+                "\t}\n" +
                 "\n" +
-                "\t\t{\n" +
-                "\t\t\t\"id\": \"3\",\n" +
-                "\t\t\t\"description\": \"Note 3 Description\"\n" +
-                "\t\t}\n" +
-                "\t]\n" +
-                "}";
+                "]";
 
             ResponseBody body = getResponseBody(result);
 
@@ -58,19 +55,17 @@ public class NoteListInterceptor implements Interceptor {
                 .header("Accept", "application/json")
                 .build();
 
-        String result = "{\n" +
-                "\t\"notesList\": [\n" +
-                "\t\t{\n" +
-                "\t\t\t\"id\": \"1\",\n" +
-                "\t\t\t\"description\": \"This is sample note to test.\"\n" +
-                "\t\t},\n" +
+        String result = "[{\n" +
+                "\t\t\"id\": \"1\",\n" +
+                "\t\t\"description\": \"This is sample note to test.\"\n" +
+                "\t},\n" +
                 "\n" +
-                "\t\t{\n" +
-                "\t\t\t\"id\": \"2\",\n" +
-                "\t\t\t\"description\": \"This is sample note to test.\"\n" +
-                "\t\t}\n" +
-                "\t]\n" +
-                "}";
+                "\t{\n" +
+                "\t\t\"id\": \"2\",\n" +
+                "\t\t\"description\": \"This is sample note to test.\"\n" +
+                "\t}\n" +
+                "\n" +
+                "]";
 
             ResponseBody body = getResponseBody(result);
             return getResponse(request,body);
